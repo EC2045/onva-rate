@@ -1,0 +1,26 @@
+# onva-rate - Esperanto
+# Formato: ŝlosilo=valoro
+# Linioj komencantaj per '#' estas komentoj
+
+# Titolo
+header.tag=Reĝlando ONVA / Financosistemo
+header.sub=Norma valuto · Ĝisdatigata ĉiujn 30 sekundojn · Semo: tagoj ĝis 7000 p.K.
+
+# Taksokarto
+rate.label.days=Tagoj ĝis 7000 p.K.
+rate.label.updated=Lasta ĝisdatigo
+
+# Konvertilo
+sec.converter=Konvertilo
+
+# Merkato
+sec.market=ONVA Merkato-prezoj
+
+# Grafeo
+sec.chart=Taksodiagramo (Rektempa)
+chart.aria=Rektempa taksodiagramo por !abyaren
+chart.fallback=Taksodiagramo
+
+# Piedo
+footer.live=VIVA · ĝisdatigata ĉiujn 30 sekundojn
+footer.copy=© 1928–2045 Reĝlando ONVA

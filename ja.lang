@@ -1,0 +1,26 @@
+# onva-rate - 日本語
+# フォーマット: キー=値
+# '#' から始まる行はコメント
+
+# ヘッダー
+header.tag=Kingdom of ONVA / Financial System
+header.sub=標準通貨 · 30秒ごとに更新 · シード：7000年までの日数
+
+# レートカード
+rate.label.days=7000年までの残り日数
+rate.label.updated=最終更新
+
+# コンバーター
+sec.converter=通貨コンバーター
+
+# マーケット
+sec.market=ONVA マーケット価格
+
+# チャート
+sec.chart=レートチャート（リアルタイム）
+chart.aria=!abyarenのリアルタイムレート推移グラフ
+chart.fallback=レート推移
+
+# フッター
+footer.live=LIVE · 30秒ごとに更新
+footer.copy=© 1928–2045 Kingdom of ONVA

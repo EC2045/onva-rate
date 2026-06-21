@@ -4,18 +4,40 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>!abyaren Exchange — Kingdom of ONVA</title>
-  <meta property="og:title" content=!abyarenから円のレート" />
+<meta name="description" content="ONVAの公式通貨 !abyaren のリアルタイム為替レート。円への換算、マーケット価格、レートチャートを提供。">
+<meta property="og:title" content="!abyaren Exchange — Kingdom of ONVA" />
+<meta property="og:description" content="!abyarenと円のリアルタイム為替レート" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://ec2045.github.io/scripts/font.js" data-lang-path="{lang}.lang"></script>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 @font-face {
   font-family: '2045alphabet';
   src: url('https://ec2045.github.io/2045font/2045alphabet.otf') format('opentype');
   font-display: swap;
 }
 
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
+  --bg: #f5f3ee;
+  --surface: #ffffff;
+  --surface2: #f0ede6;
+  --border: rgba(0,0,0,0.09);
+  --border-hi: rgba(0,0,0,0.22);
+  --text: #1a1a1a;
+  --muted: #888;
+  --dim: #555;
+  --gold: #9a6e22;
+  --gold-dim: rgba(154,110,34,0.1);
+  --mono: '2045alphabet','Space Mono', monospace;
+  --sans: '2045alphabet','Noto Sans JP', sans-serif;
+  --shadow: 0 1px 4px rgba(0,0,0,0.07);
+}
+
+/* ライトテーマベース（font.jsのdark/light切り替えにも対応） */
+[data-theme="dark"] {
   --bg: #0a0a0a;
   --surface: #111111;
   --surface2: #181818;
@@ -26,8 +48,7 @@
   --dim: #999;
   --gold: #c9a84c;
   --gold-dim: rgba(201,168,76,0.12);
-  --mono: '2045alphabet','Space Mono', monospace;
-  --sans: '2045alphabet','Noto Sans JP', sans-serif;
+  --shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
 
 body {
@@ -35,15 +56,22 @@ body {
   color: var(--text);
   font-family: var(--sans);
   min-height: 100vh;
+  transition: background 0.3s, color 0.3s;
 }
 
 .grid-bg {
   position: fixed; inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none; z-index: 0;
+}
+
+[data-theme="dark"] .grid-bg {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
 }
 
 .wrap {
@@ -72,7 +100,7 @@ h1 {
   font-family: var(--mono);
   font-size: clamp(1.4rem, 5vw, 2.1rem);
   font-weight: 700;
-  color: #e8e0c8;
+  color: var(--text);
   letter-spacing: -0.02em;
 }
 
@@ -90,9 +118,10 @@ h1 em { color: var(--gold); font-style: normal; }
 .rate-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 2px;
+  border-radius: 4px;
   padding: 1.25rem 1.5rem 1rem;
   margin-bottom: 2rem;
+  box-shadow: var(--shadow);
 }
 
 .rate-main {
@@ -144,9 +173,12 @@ h1 em { color: var(--gold); font-style: normal; }
   border-radius: 2px;
 }
 
-.delta.up { color: #6dbf7e; background: rgba(109,191,126,0.1); }
-.delta.dn { color: #e07070; background: rgba(224,112,112,0.1); }
+.delta.up { color: #2d8a46; background: rgba(45,138,70,0.1); }
+.delta.dn { color: #c0392b; background: rgba(192,57,43,0.1); }
 .delta.flat { color: var(--muted); }
+
+[data-theme="dark"] .delta.up { color: #6dbf7e; background: rgba(109,191,126,0.1); }
+[data-theme="dark"] .delta.dn { color: #e07070; background: rgba(224,112,112,0.1); }
 
 /* ── seed ── */
 .seed-row {
@@ -195,9 +227,10 @@ h1 em { color: var(--gold); font-style: normal; }
 .conv-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 2px;
+  border-radius: 4px;
   padding: 1.4rem;
   margin-bottom: 2.5rem;
+  box-shadow: var(--shadow);
 }
 
 .input-row { display: flex; align-items: stretch; }
@@ -205,7 +238,7 @@ h1 em { color: var(--gold); font-style: normal; }
 .badge {
   font-family: var(--mono);
   font-size: 10px;
-  color: var(--muted);
+  color: var(--dim);
   background: var(--surface2);
   border: 1px solid var(--border);
   border-right: none;
@@ -254,29 +287,10 @@ select:focus { border-color: var(--border-hi); }
 
 .arrow { text-align: center; color: var(--muted); font-size: 1.1rem; margin: 0.65rem 0; }
 
-.result-row {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  padding: 0.9rem 1rem;
-  display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
-}
-
-.result-num {
-  font-family: var(--mono);
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #e8e0c8;
-}
-
-.result-unit { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); }
-
 /* ── market items ── */
 .item-card {
   border: 1px solid var(--border);
-  border-radius: 2px;
+  border-radius: 4px;
   padding: 0.85rem 1.1rem;
   margin-bottom: 0.45rem;
   display: grid;
@@ -284,9 +298,10 @@ select:focus { border-color: var(--border-hi); }
   align-items: center;
   gap: 1rem;
   background: var(--surface);
-  transition: border-color 0.2s;
+  box-shadow: var(--shadow);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.item-card:hover { border-color: var(--border-hi); }
+.item-card:hover { border-color: var(--border-hi); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
 
 .item-name { font-size: 13px; color: var(--dim); }
 .item-onva { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 2px; }
@@ -296,11 +311,12 @@ select:focus { border-color: var(--border-hi); }
 .chart-box {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 2px;
+  border-radius: 4px;
   padding: 1.1rem;
   position: relative;
   height: 200px;
   margin-bottom: 2rem;
+  box-shadow: var(--shadow);
 }
 
 /* ── ticker ── */
@@ -321,7 +337,7 @@ select:focus { border-color: var(--border-hi); }
   animation: marquee 22s linear infinite;
 }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-.tv { color: #b8a87a; }
+.tv { color: var(--gold); }
 
 footer {
   border-top: 1px solid var(--border);
@@ -336,7 +352,7 @@ footer {
   display: inline-block;
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: #5cb85c;
+  background: #3da85d;
   margin-right: 5px;
   vertical-align: middle;
   animation: blink 2s ease-in-out infinite;
@@ -351,9 +367,9 @@ canvas { display: block; }
 <div class="wrap">
 
   <header>
-    <div class="kingdom-tag">Kingdom of ONVA / Financial System</div>
+    <div class="kingdom-tag">header.tag</div>
     <h1>!abyaren <em>Exchange</em></h1>
-    <div class="sub">Standard Currency · Real-time · Seed: days until 7000 CE</div>
+    <div class="sub">header.sub</div>
   </header>
 
   <!-- rate card -->
@@ -365,11 +381,11 @@ canvas { display: block; }
     </div>
     <div class="rate-meta">
       <div class="meta-item">
-        <span class="meta-label">Days to 7000 CE</span>
+        <span class="meta-label">rate.label.days</span>
         <span class="meta-val" id="days-left">—</span>
       </div>
       <div class="meta-item">
-        <span class="meta-label">Updated</span>
+        <span class="meta-label">rate.label.updated</span>
         <span class="meta-val" id="updated">—</span>
       </div>
     </div>
@@ -380,7 +396,7 @@ canvas { display: block; }
   </div>
 
   <!-- converter -->
-  <div class="sec">converter</div>
+  <div class="sec">sec.converter</div>
   <div class="conv-card">
     <div class="input-row">
       <div class="badge" id="fb">¥ JPY</div>
@@ -402,21 +418,21 @@ canvas { display: block; }
   </div>
 
   <!-- market -->
-  <div class="sec">onva market prices</div>
+  <div class="sec">sec.market</div>
   <div id="market"></div>
 
   <!-- chart -->
-  <div class="sec" style="margin-top:2rem;">rate chart (live)</div>
+  <div class="sec" style="margin-top:2rem;">sec.chart</div>
   <div class="chart-box">
-    <canvas id="rc" role="img" aria-label="!abyarenのリアルタイムレート推移グラフ">レート推移</canvas>
+    <canvas id="rc" role="img" aria-label="chart.aria">chart.fallback</canvas>
   </div>
 
   <!-- ticker -->
   <div class="ticker"><div class="ticker-inner" id="tk"></div></div>
 
   <footer>
-    <div class="ft"><span class="dot"></span>LIVE · updated every 30 seconds</div>
-    <div class="ft">© 1928–2045 Kingdom of ONVA</div>
+    <div class="ft"><span class="dot"></span>footer.live</div>
+    <div class="ft">footer.copy</div>
   </footer>
 </div>
 
@@ -429,8 +445,8 @@ const ITEMS = [
 ];
 const ABYANG_RATE_FACTOR = 0.55; // !abyang = !abyaren × 0.55（固定比率）
 
-let rate = 100;
-let prevRate = 100;
+let rate = 153;
+let prevRate = 153;
 let hist = [];
 const MAX_H = 60;
 let chart;
@@ -490,7 +506,12 @@ function buildTicker(diffDays) {
     .join('');
 }
 
+function getChartTickColor() {
+  return document.documentElement.getAttribute('data-theme') === 'dark' ? '#3a3a3a' : '#aaa';
+}
+
 function initChart() {
+  const tickColor = getChartTickColor();
   chart = new Chart(document.getElementById('rc').getContext('2d'), {
     type: 'line',
     data: {
@@ -498,8 +519,8 @@ function initChart() {
       datasets: [{
         label: '!abyaren/JPY',
         data: [],
-        borderColor: '#c9a84c',
-        backgroundColor: 'rgba(201,168,76,0.06)',
+        borderColor: '#9a6e22',
+        backgroundColor: 'rgba(154,110,34,0.07)',
         borderWidth: 1.5,
         pointRadius: 0,
         fill: true,
@@ -515,14 +536,14 @@ function initChart() {
       },
       scales: {
         x: {
-          ticks: { color: '#3a3a3a', font: { family: 'Space Mono', size: 8 }, maxTicksLimit: 5 },
-          grid: { color: 'rgba(255,255,255,0.02)' },
-          border: { color: 'rgba(255,255,255,0.04)' }
+          ticks: { color: tickColor, font: { family: 'Space Mono', size: 8 }, maxTicksLimit: 5 },
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          border: { color: 'rgba(0,0,0,0.08)' }
         },
         y: {
-          ticks: { color: '#3a3a3a', font: { family: 'Space Mono', size: 8 }, callback: v => '¥' + v.toFixed(1) },
-          grid: { color: 'rgba(255,255,255,0.02)' },
-          border: { color: 'rgba(255,255,255,0.04)' }
+          ticks: { color: tickColor, font: { family: 'Space Mono', size: 8 }, callback: v => '¥' + v.toFixed(1) },
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          border: { color: 'rgba(0,0,0,0.08)' }
         }
       }
     }
@@ -533,7 +554,7 @@ async function tick() {
   try {
     const response = await fetch(`${API_BASE}/rate`);
     if (!response.ok) throw new Error('API response error');
-    
+
     const data = await response.json();
     prevRate = rate;
     rate = data.rate;

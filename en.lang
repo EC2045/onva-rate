@@ -1,0 +1,26 @@
+# onva-rate - English
+# Format: key=value
+# Lines starting with '#' are comments
+
+# Header
+header.tag=Kingdom of ONVA / Financial System
+header.sub=Standard Currency · Updated every 30s · Seed: days until 7000 CE
+
+# Rate card
+rate.label.days=Days to 7000 CE
+rate.label.updated=Updated
+
+# Converter
+sec.converter=Converter
+
+# Market
+sec.market=ONVA Market Prices
+
+# Chart
+sec.chart=Rate Chart (Live)
+chart.aria=Real-time rate chart for !abyaren
+chart.fallback=Rate Chart
+
+# Footer
+footer.live=LIVE · updated every 30 seconds
+footer.copy=© 1928–2045 Kingdom of ONVA
