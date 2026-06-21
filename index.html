@@ -415,7 +415,7 @@ canvas { display: block; }
   <div class="ticker"><div class="ticker-inner" id="tk"></div></div>
 
   <footer>
-    <div class="ft"><span class="dot"></span>LIVE · updated every second</div>
+    <div class="ft"><span class="dot"></span>LIVE · updated every 30 seconds</div>
     <div class="ft">© 1928–2045 Kingdom of ONVA</div>
   </footer>
 </div>
@@ -435,37 +435,9 @@ let hist = [];
 const MAX_H = 60;
 let chart;
 
-/* seed & base rate (stable across devices for same day) */
-function getSeed() {
-  const now = new Date();
-  const target = new Date('7000-01-01T00:00:00.000Z');
-  const diffMs = target - now;
-  const diffDays = diffMs / 86400000;
-  const intPart = Math.floor(diffDays);
-  const frac = (diffDays - intPart).toFixed(29).slice(1);
-  return { seedStr: String(intPart) + frac, diffDays };
-}
-
-function fnvHash(str) {
-  let h = 0x811c9dc5 >>> 0;
-  for (let i = 0; i < str.length; i++) {
-    h ^= str.charCodeAt(i);
-    h = Math.imul(h, 0x01000193) >>> 0;
-  }
-  return h / 4294967295;
-}
-
-function computeRate(seedStr) {
-  const base = 80 + fnvHash(seedStr) * 60; // 80~140円、日付ベースで固定
-
-  /* 極めて穏やかな変動: 振幅 ±0.05円 程度 */
-  const t = Date.now() / 1000;
-  const slow  = Math.sin(t * 0.0008) * 0.03;
-  const mid   = Math.cos(t * 0.0023) * 0.015;
-  const micro = Math.sin(t * 0.011 + 1.7) * 0.0005;
-
-  return base + slow + mid + micro;
-}
+const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.hostname === '')
+  ? 'http://localhost:3000'
+  : 'https://onvaapi.tadoris-e.com';
 
 function toJPY(amount, cur) {
   if (cur === 'jpy') return amount;
@@ -557,44 +529,54 @@ function initChart() {
   });
 }
 
-function pushChart(r) {
-  const lbl = new Date().toLocaleTimeString('ja-JP');
-  hist.push({ lbl, r });
-  if (hist.length > MAX_H) hist.shift();
-  chart.data.labels = hist.map(h => h.lbl);
-  chart.data.datasets[0].data = hist.map(h => h.r);
-  chart.update('none');
-}
+async function tick() {
+  try {
+    const response = await fetch(`${API_BASE}/rate`);
+    if (!response.ok) throw new Error('API response error');
+    
+    const data = await response.json();
+    prevRate = rate;
+    rate = data.rate;
+    const diffDays = data.diffDays;
+    const seedStr = data.seedStr;
 
-function tick() {
-  const { seedStr, diffDays } = getSeed();
-  prevRate = rate;
-  rate = computeRate(seedStr);
+    const diff = rate - prevRate;
+    const deltaEl = document.getElementById('delta');
+    if (Math.abs(diff) < 0.001) {
+      deltaEl.textContent = '—'; deltaEl.className = 'delta flat';
+    } else if (diff > 0) {
+      deltaEl.textContent = '+' + diff.toFixed(3); deltaEl.className = 'delta up';
+    } else {
+      deltaEl.textContent = diff.toFixed(3); deltaEl.className = 'delta dn';
+    }
 
-  const diff = rate - prevRate;
-  const deltaEl = document.getElementById('delta');
-  if (Math.abs(diff) < 0.001) {
-    deltaEl.textContent = '—'; deltaEl.className = 'delta flat';
-  } else if (diff > 0) {
-    deltaEl.textContent = '+' + diff.toFixed(3); deltaEl.className = 'delta up';
-  } else {
-    deltaEl.textContent = diff.toFixed(3); deltaEl.className = 'delta dn';
+    document.getElementById('rn').textContent = rate.toFixed(3);
+    document.getElementById('days-left').textContent = Math.floor(diffDays).toLocaleString() + ' 日';
+    document.getElementById('updated').textContent = new Date().toLocaleTimeString('ja-JP');
+    document.getElementById('seed-v').textContent = seedStr.slice(0, 42) + '...';
+
+    recalc();
+    updateMarket();
+    buildTicker(diffDays);
+
+    // APIから取得した履歴（price.jsonのデータ）でグラフを同期
+    if (data.history && data.history.length > 0) {
+      hist = data.history;
+      chart.data.labels = hist.map(h => h.lbl);
+      chart.data.datasets[0].data = hist.map(h => h.r);
+      chart.update('none');
+    }
+  } catch (error) {
+    console.error('Failed to fetch rate:', error);
+    document.getElementById('rn').textContent = 'Error';
+    document.getElementById('delta').textContent = '—';
+    document.getElementById('delta').className = 'delta flat';
   }
-
-  document.getElementById('rn').textContent = rate.toFixed(3);
-  document.getElementById('days-left').textContent = Math.floor(diffDays).toLocaleString() + ' 日';
-  document.getElementById('updated').textContent = new Date().toLocaleTimeString('ja-JP');
-  document.getElementById('seed-v').textContent = seedStr.slice(0, 42) + '...';
-
-  recalc();
-  updateMarket();
-  buildTicker(diffDays);
-  pushChart(rate);
 }
 
 initChart();
 tick();
-setInterval(tick, 1000);
+setInterval(tick, 30000);
 </script>
 </body>
 </html>
